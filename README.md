@@ -108,3 +108,22 @@ docker run -it \
 	bash
 ```
 
+You may create the container over ssh but better not start the build. But here we connect the current directory with the container so the checkout and compiling is saved outside of the container.
+
+Restart the container on your console with:
+
+```bash
+docker start -ai build-phantomjs
+```
+
+Start building with:
+
+```bash
+./build.sh
+```
+
+It will ask you before starting the build shortly after the submodules checkout.
+
+### Result
+
+The resulting bin/phantomjs has 39.5MB on my system. You might want to copy it to some safe place for future reuse.
