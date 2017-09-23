@@ -1,11 +1,11 @@
-# Build Phantomjs for ubuntu-armhf
+# Build Phantomjs for ubuntu-arm32v7
 
 Sadly Phantomjs has no prebuilt version for arm based systems.
 
 But there are two ways for building it:
 
 - compile on Raspbian
-- compile in a docker container (ubuntu-armhf) on rasbian
+- compile in a docker container (ubuntu-arm32v7) on rasbian
 
 The build requirements, build time and the results differ, so it depends massively on the environment.
 
@@ -23,7 +23,7 @@ Unbox you Raspberry Pi - it will really work hard and produce heat for a long ti
 
 Most of the following commands can be done via ssh which is nice for copy/paste the commands. But the building will probably screw up the network or other things so it has to be started on the real console.
 
-Get the best version number and other hints from [http://phantomjs.org/build.html](http://phantomjs.org/build.html), the list of required packages does not perfectly fit to the Raspbian / ubuntu-armhf environment, I've included them here and in the `Dockerfile`, see below for docker building.
+Get the best version number and other hints from [http://phantomjs.org/build.html](http://phantomjs.org/build.html), the list of required packages does not perfectly fit to the Raspbian / ubuntu-arm32v7 environment, I've included them here and in the `Dockerfile`, see below for docker building.
 
 ## Building on Raspbian
 
@@ -80,17 +80,17 @@ curl -sSL https://get.docker.com | sh
 sudo adduser pi docker
 ```
 
-Clone this repo and check the `Dockerfile` - this one depends on my [uwegerdes/docker-baseimage-armhf](https://github.com/UweGerdes/docker-baseimage-armhf) which is based on `[armhf/ubuntu](https://hub.docker.com/r/armhf/ubuntu/)` - the one I will use with Phantomjs. It already includes some of the dependencies.
+Clone this repo and check the `Dockerfile` - this one depends on my [uwegerdes/docker-baseimage-arm32v7](https://github.com/UweGerdes/docker-baseimage-arm32v7) which is based on `[arm32v7/ubuntu](https://hub.docker.com/r/arm32v7/ubuntu/)` - the one I will use with Phantomjs. It already includes some of the dependencies.
 
 ```bash
-git clone https://github.com/UweGerdes/docker-baseimage-armhf.git
-cd docker-baseimage-armhf
+git clone https://github.com/UweGerdes/docker-baseimage-arm32v7.git
+cd docker-baseimage-arm32v7
 docker build -t uwegerdes/baseimage --build-arg APT_PROXY="http://192.168.1.18:3142" --build-arg TZ="Europe/Berlin" .
 ```
 
-It is built as `uwegerdes/baseimage` without the `-armhf` so I can use it with my other dockers that build without problems. The proxy parameter might differ or your system, but I recommend using a proxy to speed up subsequent builds. The time zone should be changed to your location.
+It is built as `uwegerdes/baseimage` without the `-arm32v7` so I can use it with my other dockers that build without problems. The proxy parameter might differ or your system, but I recommend using a proxy to speed up subsequent builds. The time zone should be changed to your location.
 
-There is also a `armhf/alpine` available if you prefer Alpine - but you have to change the `Dockerfile` commands and the requirements. Feedback welcome!
+There is also a `arm32v7/alpine` available if you prefer Alpine - but you have to change the `Dockerfile` commands and the requirements. Feedback welcome!
 
 Now build the docker image - it is only the environment - the cloning and compiling of phantomjs is done in a container with a volume attached so you have the 2.2GB data and the resulting `bin/phantomjs` outside the container.
 
