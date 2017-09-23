@@ -120,7 +120,7 @@ Start building with:
 
 ```bash
 ./build.sh
-```
+``` 14:20 -
 
 It will ask you before starting the build shortly after the submodules checkout.
 
