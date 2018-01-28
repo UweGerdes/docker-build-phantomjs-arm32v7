@@ -7,12 +7,13 @@ FROM uwegerdes/baseimage
 
 MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
 
-ARG UID='1000'
-ARG GID='1000'
+ARG UID=1000
+ARG GID=1000
+ARG PHANTOM_JS_VERSION=2.1.1
 
 ENV USER_NAME phantomjs
 ENV HOME /home/${USER_NAME}
-ENV PHANTOM_JS_VERSION 2.1.1
+ENV PHANTOM_JS_VERSION ${PHANTOM_JS_VERSION}
 
 RUN apt-get update && \
 	apt-get dist-upgrade -y && \

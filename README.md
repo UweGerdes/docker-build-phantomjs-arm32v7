@@ -34,6 +34,8 @@ The `git clone...` and the `git submodule update` will take some minutes for dow
 Now let's install the requirements, clone phantomjs, load dependencies (710MB will be loaded, 1.3GB before build, time depends on your network connection plus some minutes for unpacking, checking out):
 
 ```bash
+sudo apt-get update
+sudo apt-get dist-upgrade
 sudo apt-get install g++ flex bison gperf ruby ruby-dev perl libsqlite3-dev libfontconfig1-dev icu-doc libicu-dev libfreetype6 libssl-dev libpng-dev libjpeg8-dev ttf-mscorefonts-installer fontconfig build-essential chrpath git-core libfreetype6-dev openssl
 git clone git://github.com/ariya/phantomjs.git
 cd phantomjs
@@ -76,16 +78,16 @@ The resulting bin/phantomjs has 47.9MB on my system. You might want to copy it t
 Install Docker with:
 
 ```bash
-curl -sSL https://get.docker.com | sh
-sudo adduser pi docker
+$ curl -sSL https://get.docker.com | sh
+$ sudo adduser pi docker
 ```
 
 Clone this repo and check the `Dockerfile` - this one depends on my [uwegerdes/docker-baseimage-arm32v7](https://github.com/UweGerdes/docker-baseimage-arm32v7) which is based on `[arm32v7/ubuntu](https://hub.docker.com/r/arm32v7/ubuntu/)` - the one I will use with Phantomjs. It already includes some of the dependencies.
 
 ```bash
-git clone https://github.com/UweGerdes/docker-baseimage-arm32v7.git
-cd docker-baseimage-arm32v7
-docker build -t uwegerdes/baseimage --build-arg APT_PROXY="http://192.168.1.18:3142" --build-arg TZ="Europe/Berlin" .
+$ git clone https://github.com/UweGerdes/docker-baseimage-arm32v7.git
+$ cd docker-baseimage-arm32v7
+$ docker build -t uwegerdes/baseimage --build-arg APT_PROXY="http://192.168.1.18:3142" --build-arg TZ="Europe/Berlin" .
 ```
 
 It is built as `uwegerdes/baseimage` without the `-arm32v7` so I can use it with my other dockers that build without problems. The proxy parameter might differ or your system, but I recommend using a proxy to speed up subsequent builds. The time zone should be changed to your location.
@@ -95,13 +97,15 @@ There is also a `arm32v7/alpine` available if you prefer Alpine - but you have t
 Now build the docker image - it is only the environment - the cloning and compiling of phantomjs is done in a container with a volume attached so you have the 2.2GB data and the resulting `bin/phantomjs` outside the container.
 
 ```bash
-docker build -t uwegerdes/build-phantomjs .
+$ docker build -t uwegerdes/build-phantomjs \
+	--build-arg PHANTOM_JS_VERSION="2.1.3" \
+	.
 ```
 
 With that image you can now start a container to build Phantomjs:
 
 ```bash
-docker run -it \
+$ docker run -it \
 	--name build-phantomjs \
 	-v $(pwd):/home/phantomjs \
 	uwegerdes/build-phantomjs \
@@ -113,13 +117,13 @@ You may create the container over ssh but better not start the build. But here w
 Restart the container on your console with:
 
 ```bash
-docker start -ai build-phantomjs
+$ docker start -ai build-phantomjs
 ```
 
 Start building with:
 
 ```bash
-./build.sh
+$ ./build.sh
 ```
 
 It will ask you before starting the build shortly after the submodules checkout.
