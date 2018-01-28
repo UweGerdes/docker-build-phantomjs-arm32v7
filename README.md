@@ -13,7 +13,7 @@ The build requirements, build time and the results differ, so it depends massive
 
 I'm using a Rapberry Pi 3 - four cpus will do the job in some hours. But you should give them some more swap space and not run a desktop environment.
 
-The Rasbian is on a 32GB U1 (100MB) Micro-SD card - build time depends massively on it's speed. The total space needed is about 2.2GB.
+The Rasbian is on a 32GB U1 (100MB/s) Micro-SD card - build time depends massively on it's speed. The total space needed is about 2.2GB.
 
 Edit the file `/etc/dphys-swapfile` - default is 100MB, better comment this line and enable `CONF_SWAPFACTOR=2`.
 
