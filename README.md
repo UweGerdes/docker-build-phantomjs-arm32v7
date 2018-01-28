@@ -58,7 +58,7 @@ If you rerun the build please use this for cleaning:
 
 ```bash
 git submodule foreach git clean -ddfx
-python build.py --git-clean-qtbase
+python build.py --git-clean-qtbase --git-clean-qtwebkit
 ```
 
 ### SSL library
@@ -120,7 +120,7 @@ Start building with:
 
 ```bash
 ./build.sh
-``` 14:20 -
+```
 
 It will ask you before starting the build shortly after the submodules checkout.
 
