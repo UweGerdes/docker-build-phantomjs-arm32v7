@@ -98,7 +98,6 @@ Now build the docker image - it is only the environment - the cloning and compil
 
 ```bash
 $ docker build -t uwegerdes/build-phantomjs \
-	--build-arg PHANTOM_JS_VERSION="2.1.3" \
 	.
 ```
 
