@@ -97,8 +97,7 @@ There is also a `arm32v7/alpine` available if you prefer Alpine - but you have t
 Now build the docker image - it is only the environment - the cloning and compiling of phantomjs is done in a container with a volume attached so you have the 2.2GB data and the resulting `bin/phantomjs` outside the container.
 
 ```bash
-$ docker build -t uwegerdes/build-phantomjs \
-	.
+$ docker build -t uwegerdes/build-phantomjs .
 ```
 
 With that image you can now start a container to build Phantomjs:

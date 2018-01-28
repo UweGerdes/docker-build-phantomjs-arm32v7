@@ -4,4 +4,4 @@ cd ./phantomjs/
 git checkout ${PHANTOM_JS_VERSION}
 git submodule init
 git submodule update
-python build.py
+python build.py --jobs 1
