@@ -13,7 +13,7 @@ The build requirements, build time and the results differ, so it depends massive
 
 I'm using a Rapberry Pi 3 - four cpus will do the job in some hours. But you should give them some more swap space and not run a desktop environment.
 
-The Rasbian is on a 32GB U1 (100MB/s) Micro-SD card - build time depends massively on it's speed. The total space needed is about 2.2GB.
+The Rasbian is on a 32GB U1 (100MB/s) Micro-SD card - build time depends massively on it's speed. The total space needed is about 3GB.
 
 Edit the file `/etc/dphys-swapfile` - default is 100MB, better comment this line and enable `CONF_SWAPFACTOR=2`.
 
@@ -94,7 +94,7 @@ It is built as `uwegerdes/baseimage` without the `-arm32v7` so I can use it with
 
 There is also a `arm32v7/alpine` available if you prefer Alpine - but you have to change the `Dockerfile` commands and the requirements. Feedback welcome!
 
-Now build the docker image - it is only the environment - the cloning and compiling of phantomjs is done in a container with a volume attached so you have the 2.2GB data and the resulting `bin/phantomjs` outside the container.
+Now build the docker image - it is only the environment and the sources - compiling of phantomjs is done in a container with a volume attached so you have the resulting `bin/phantomjs` outside the container.
 
 ```bash
 $ docker build -t uwegerdes/build-phantomjs .
@@ -128,4 +128,5 @@ It will ask you before starting the build shortly after the submodules checkout.
 
 ### Result
 
-The resulting bin/phantomjs has 39.5MB on my system. You might want to copy it to some safe place for future reuse.
+The resulting bin/phantomjs has 41.4MB on my system. You might want to copy it to some safe place for future reuse.
+

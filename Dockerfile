@@ -1,7 +1,6 @@
 #
-# Dockerfile for build-phantomsjs-armhf
+# Dockerfile for building phantomsjs on Raspberry Pi 3
 #
-# docker build -t uwegerdes/build-phantomsjs-armhf .
 
 FROM uwegerdes/baseimage
 
@@ -11,7 +10,8 @@ ARG UID=1000
 ARG GID=1000
 
 ENV USER_NAME phantomjs
-ENV HOME /home/${USER_NAME}
+ENV USER_DIR /home/${USER_NAME}
+ENV SOURCE /home/src
 ENV PHANTOM_JS_VERSION 2.1.1
 
 RUN apt-get update && \
@@ -38,17 +38,26 @@ RUN apt-get update && \
 		ruby && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* && \
-	mkdir -p ${HOME} && \
+	mkdir -p ${USER_DIR} && \
 	groupadd --gid ${GID} ${USER_NAME} && \
-	useradd --uid ${UID} --gid ${GID} --home-dir ${HOME} --shell /bin/bash ${USER_NAME} && \
+	useradd --uid ${UID} --gid ${GID} --home-dir ${USER_DIR} --shell /bin/bash ${USER_NAME} && \
 	adduser ${USER_NAME} sudo && \
 	echo "${USER_NAME}:${USER_NAME}" | chpasswd && \
-	chown -R ${USER_NAME}:${USER_NAME} ${HOME}
+	chown -R ${USER_NAME}:${USER_NAME} /home
 
-WORKDIR ${HOME}
+WORKDIR "${USER_DIR}"
 
 USER ${USER_NAME}
 
-VOLUME [ "${HOME}" ]
+RUN mkdir -p ${SOURCE} && \
+	cd ${SOURCE} && \
+	git clone git://github.com/ariya/phantomjs.git && \
+	cd ./phantomjs/ && \
+	git checkout ${PHANTOM_JS_VERSION} && \
+	git submodule init && \
+	git submodule update
 
-CMD [ "${HOME}/build.sh" ]
+VOLUME [ "${USER_DIR}" ]
+
+CMD [ "build.sh" ]
+

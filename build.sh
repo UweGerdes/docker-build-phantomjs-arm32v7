@@ -1,7 +1,10 @@
 #!/bin/bash
-git clone git://github.com/ariya/phantomjs.git
-cd ./phantomjs/
-git checkout ${PHANTOM_JS_VERSION}
-git submodule init
-git submodule update
+
+cd /home/src/phantomjs/
+
 python build.py --jobs 1
+
+cp -r /home/src/phantomjs/bin /home/phantomjs/
+
+cd /home/phantomjs/
+
