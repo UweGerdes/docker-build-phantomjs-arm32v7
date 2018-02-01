@@ -55,6 +55,7 @@ RUN mkdir -p ${SOURCE} && \
 	cd ./phantomjs/ && \
 	git checkout ${PHANTOM_JS_VERSION} && \
 	git submodule init && \
+	echo "Please wait some minutes for each submodule update" && \
 	git submodule update
 
 VOLUME [ "${USER_DIR}" ]
