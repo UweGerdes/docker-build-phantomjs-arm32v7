@@ -2,7 +2,7 @@
 # Dockerfile for building phantomsjs on Raspberry Pi 3
 #
 
-FROM uwegerdes/baseimage
+FROM uwegerdes/baseimage-arm32v7
 
 MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
 
