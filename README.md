@@ -5,7 +5,7 @@ Sadly Phantomjs has no prebuilt version for arm based systems.
 But there are two ways for building it:
 
 - compile on Raspbian
-- compile in a docker container (ubuntu-arm32v7) on rasbian
+- compile in a docker container (ubuntu-arm32v7) on raspbian
 
 The build requirements, build time and the results differ, so it depends massively on the environment.
 
@@ -13,7 +13,7 @@ The build requirements, build time and the results differ, so it depends massive
 
 I'm using a Rapberry Pi 3 - four cpus will do the job in some hours. But you should give them some more swap space and not run a desktop environment.
 
-The Rasbian is on a 32GB U1 (100MB/s) Micro-SD card - build time depends massively on it's speed. The total space needed is about 3GB.
+The Raspbian is on a 32GB U1 (100MB/s) Micro-SD card - build time depends massively on it's speed. The total space needed is about 3GB.
 
 Edit the file `/etc/dphys-swapfile` - default is 100MB, better comment this line and enable `CONF_SWAPFACTOR=2`.
 
@@ -69,7 +69,7 @@ python build.py --jobs 1 --git-clean-qtbase --git-clean-qtwebkit
 
 There are some possible SSL libs you can use for compiling, `openssl` is used above. But depending on the environment other libs might be available: `libssl1.0-dev`, `openssl-1.0-dev` or others. After installing check the location of the directories in `/usr/include` and `/usr/lib/` and use the `--qt-config` options below for the build command.
 
-https://stackoverflow.com/questions/45498269/error-failed-to-build-phantomjs-building-qt-base-failed told me to use `openssl-1.0-dev` with `--qt-config "-I /usr/include/openssl-1.0/ -L /usr/lib/openssl-1.0/"` but it's not available on rasbian. Check your openssl files.
+https://stackoverflow.com/questions/45498269/error-failed-to-build-phantomjs-building-qt-base-failed told me to use `openssl-1.0-dev` with `--qt-config "-I /usr/include/openssl-1.0/ -L /usr/lib/openssl-1.0/"` but it's not available on raspbian. Check your openssl files.
 
 ### JSStringRef.h patch
 
@@ -91,6 +91,7 @@ $ sudo adduser pi docker
 Clone this repo and check the `Dockerfile` - it depends on my [uwegerdes/docker-baseimage-arm32v7](https://github.com/UweGerdes/docker-baseimage-arm32v7) which is based on `[arm32v7/ubuntu](https://hub.docker.com/r/arm32v7/ubuntu/)` - the one I will use with Phantomjs. It already includes some of the dependencies.
 
 ### Build baseimage
+
 ```bash
 $ git clone https://github.com/UweGerdes/docker-baseimage-arm32v7.git
 $ cd docker-baseimage-arm32v7
@@ -109,7 +110,7 @@ Now build the docker image - it is only the environment and the sources - compil
 $ docker build -t uwegerdes/build-phantomjs .
 ```
 
-Wait half an hour for build to complete.
+Wait half an hour for build to complete. The `libicu-dev` version is critical - you might need to recompile phantomjs if you get an error like `error while loading shared libraries: libicui18n.so.52: cannot open shared object file: No such file or directory`.
 
 ### Run the build container
 
