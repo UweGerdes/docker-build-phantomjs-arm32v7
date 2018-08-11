@@ -124,7 +124,7 @@ Start building with:
 $ ./build.sh
 ```
 
-It will ask you before starting the build shortly after the submodules checkout.
+It will ask you before starting the build so make sure you hit return then. And then wait 7 hours 20 minutes...
 
 ### Result
 

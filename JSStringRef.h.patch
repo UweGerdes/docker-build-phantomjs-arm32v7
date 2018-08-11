@@ -1,0 +1,19 @@
+--- JSStringRef.h.orig	2018-08-10 17:44:00.781913097 +0200
++++ JSStringRef.h	2018-08-10 17:46:05.350037826 +0200
+@@ -27,6 +27,7 @@
+ #define JSStringRef_h
+ 
+ #include <JavaScriptCore/JSValueRef.h>
++#include <uchar.h>
+ 
+ #ifndef __cplusplus
+ #include <stdbool.h>
+@@ -43,7 +44,7 @@
+ @typedef JSChar
+ @abstract A Unicode character.
+ */
+-    typedef unsigned short JSChar;
++    typedef char16_t JSChar;
+ #else
+     typedef wchar_t JSChar;
+ #endif
