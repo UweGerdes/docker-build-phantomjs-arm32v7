@@ -47,8 +47,10 @@ git submodule update
 Now start the build on the Raspbian CLI prompt (not ssh connection):
 
 ```bash
-python build.py
+python build.py --jobs 1
 ```
+
+Running only one job in parallel takes longer - I had problems when using all four cpus parallel (perhaps heat).
 
 You can interrupt the build with CRTL-Z if you want do peek the memory and process status(`free`, `ps`, `top`). Continue the build with `fg`. Some steps will take several minutes so don't panic if doesn't output anyting. If the system crashes the CRTL-Z will not work - you have to power down.
 
@@ -60,7 +62,7 @@ If you rerun the build please use this for cleaning:
 
 ```bash
 git submodule foreach git clean -ddfx
-python build.py --git-clean-qtbase --git-clean-qtwebkit
+python build.py --jobs 1 --git-clean-qtbase --git-clean-qtwebkit
 ```
 
 ### SSL library
@@ -68,6 +70,10 @@ python build.py --git-clean-qtbase --git-clean-qtwebkit
 There are some possible SSL libs you can use for compiling, `openssl` is used above. But depending on the environment other libs might be available: `libssl1.0-dev`, `openssl-1.0-dev` or others. After installing check the location of the directories in `/usr/include` and `/usr/lib/` and use the `--qt-config` options below for the build command.
 
 https://stackoverflow.com/questions/45498269/error-failed-to-build-phantomjs-building-qt-base-failed told me to use `openssl-1.0-dev` with `--qt-config "-I /usr/include/openssl-1.0/ -L /usr/lib/openssl-1.0/"` but it's not available on rasbian. Check your openssl files.
+
+### JSStringRef.h patch
+
+You might have to apply a patch for JSStringRef.h - see Dockerfile and use it with your path to phantomjs source.
 
 ### Result
 
@@ -82,17 +88,20 @@ $ curl -sSL https://get.docker.com | sh
 $ sudo adduser pi docker
 ```
 
-Clone this repo and check the `Dockerfile` - this one depends on my [uwegerdes/docker-baseimage-arm32v7](https://github.com/UweGerdes/docker-baseimage-arm32v7) which is based on `[arm32v7/ubuntu](https://hub.docker.com/r/arm32v7/ubuntu/)` - the one I will use with Phantomjs. It already includes some of the dependencies.
+Clone this repo and check the `Dockerfile` - it depends on my [uwegerdes/docker-baseimage-arm32v7](https://github.com/UweGerdes/docker-baseimage-arm32v7) which is based on `[arm32v7/ubuntu](https://hub.docker.com/r/arm32v7/ubuntu/)` - the one I will use with Phantomjs. It already includes some of the dependencies.
 
+### Build baseimage
 ```bash
 $ git clone https://github.com/UweGerdes/docker-baseimage-arm32v7.git
 $ cd docker-baseimage-arm32v7
-$ docker build -t uwegerdes/baseimage --build-arg APT_PROXY="http://192.168.1.18:3142" --build-arg TZ="Europe/Berlin" .
+$ docker build -t uwegerdes/baseimage -t uwegerdes/baseimage-arm32v7 --build-arg TZ="Europe/Berlin" .
 ```
 
-It is built as `uwegerdes/baseimage` without the `-arm32v7` so I can use it with my other dockers that build without problems. The proxy parameter might differ or your system, but I recommend using a proxy to speed up subsequent builds. The time zone should be changed to your location.
+The tag `uwegerdes/baseimage` is used with my other dockers that build without problems.
+The time zone should be changed to your location.
+If you have an apt-cacher-ng server in your network add `--build-arg APT_PROXY="http://192.168.1.18:3142"` to the build command.
 
-There is also a `arm32v7/alpine` available if you prefer Alpine - but you have to change the `Dockerfile` commands and the requirements. Feedback welcome!
+### Build the build image
 
 Now build the docker image - it is only the environment and the sources - compiling of phantomjs is done in a container with a volume attached so you have the resulting `bin/phantomjs` outside the container.
 
@@ -100,7 +109,11 @@ Now build the docker image - it is only the environment and the sources - compil
 $ docker build -t uwegerdes/build-phantomjs .
 ```
 
-With that image you can now start a container to build Phantomjs:
+Wait half an hour for build to complete.
+
+### Run the build container
+
+With that image you can now start a container to build phantomjs:
 
 ```bash
 $ docker run -it \
@@ -118,6 +131,8 @@ Restart the container on your console with:
 $ docker start -ai build-phantomjs
 ```
 
+### Run the phantomjs build
+
 Start building with:
 
 ```bash
@@ -128,5 +143,7 @@ It will ask you before starting the build so make sure you hit return then. And 
 
 ### Result
 
-The resulting bin/phantomjs has 41.4MB on my system. You might want to copy it to some safe place for future reuse.
+The resulting bin/phantomjs has 43.4MB on my system. You might want to copy it to some safe place for future reuse.
+
+In my other Dockerfiles using phantomjs you find a Dockerfile.arm32v7 which expects to find the precompiled phantomjs in `build/phantomjs/bin/`.
 
